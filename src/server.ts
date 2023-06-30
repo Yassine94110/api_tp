@@ -3,8 +3,8 @@ import http from 'http';
 import mongoose from 'mongoose';
 import { config } from './config/config';
 import Logging from './library/Logging';
-import authorRoutes from './routes/Author';
-import bookRoutes from './routes/Book';
+import barRoutes from './routes/Bar';
+import cocktailRoutes from './routes/Cocktail';
 
 const router = express();
 
@@ -12,7 +12,7 @@ const router = express();
 mongoose
     .connect(config.mongo.url, { retryWrites: true, w: 'majority' })
     .then(() => {
-        Logging.info('Mongo connected successfully.');
+        Logging.info('mongo connected.');
         StartServer();
     })
     .catch((error) => Logging.error(error));
@@ -49,15 +49,15 @@ const StartServer = () => {
     });
 
     /** Routes */
-    router.use('/authors', authorRoutes);
-    router.use('/books', bookRoutes);
+    router.use('/bars', barRoutes);
+    router.use('/cocktails', cocktailRoutes);
 
     /** Healthcheck */
-    router.get('/ping', (req, res, next) => res.status(200).json({ hello: 'world' }));
+    router.get('/test', (req, res, next) => res.status(200).json({ hello: 'test' }));
 
     /** Error handling */
     router.use((req, res, next) => {
-        const error = new Error('Not found');
+        const error = new Error('404');
 
         Logging.error(error);
 
